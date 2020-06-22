@@ -33,11 +33,11 @@ $(function(){
     <div class="form-group">
     <label>Your Barber:</label>
       <select name="barber" class="form-control">
-        <option>Arnold Springer</option>
-        <option>Hans-Joachim Stroth</option>
-        <option>Zeev Nedermann</option>
-        <option>William La Belle</option>
-        <option>Alan Chop</option>        
+        <option <%= @barber == 'Arnold Springer' ? 'selected' : '' %>>Arnold Springer</option>
+        <option <%= @barber == 'Hans-Joachim Stroth' ? 'selected' : '' %>>Hans-Joachim Stroth</option>
+        <option <%= @barber == 'Zeev Nedermann' ? 'selected' : '' %>>Zeev Nedermann</option>
+        <option <%= @barber == 'William La Belle' ? 'selected' : '' %>>William La Belle</option>
+        <option <%= @barber == 'Alan Chop' ? 'selected' : '' %>>Alan Chop</option>        
       </select>    
     </div>
 
