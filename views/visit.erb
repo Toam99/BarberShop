@@ -8,7 +8,7 @@ $(function(){
 
   alert('Hello from visit page!');
   $('#color').simplecolorpicker();
-
+  $('#datetimepicker').datetimepicker();
 });
 
 </script> 
@@ -27,7 +27,7 @@ $(function(){
 
   <div class="form-group">
     <label>When to wait for you?</label>
-    <input name="datetime" type="text" class="form-control" placeholder="Enter date and time" value="<%= @datetime %>">
+    <input id="datetimepicker" name="datetime" type="text" class="form-control" placeholder="Enter date and time" value="<%= @datetime %>">
   </div>
 
     <div class="form-group">
