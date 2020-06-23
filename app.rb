@@ -1,7 +1,21 @@
-#encoding: utf-8
 require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sqlite3'
+
+configure do
+  @db = SQLite3::Database.new 'barbershop.db'
+  @db.execute 'CREATE TABLE IF NOT EXISTS  
+        "Users" 
+        (
+            "Id" INTEGER PRIMARY KEY AUTOINCREMENT, 
+            "username" TEXT, 
+            "phone" TEXT, 
+            "date_stamp" TEXT, 
+            "barber" TEXT, 
+            "color" TEXT
+        )'
+end 
 
 get '/' do
        erb "Hello! <a href=\"https://github.com/bootstrap-ruby/sinatra-bootstrap\">Original</a> pattern has been modified for <a href=\"http://rubyschool.us/\">Ruby School !!!</a>"            
@@ -42,3 +56,6 @@ post '/visit' do
     erb "OK, username is #{@username}, #{@phone}, #{@datetime}, #{@barber}, #{@color}"
 
 end
+
+# add 
+# require 'sqlite3'
