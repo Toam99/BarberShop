@@ -3,31 +3,61 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
 
-def get_db 
-    db = SQLite3::Database.new 'barbershop.db'
-    db.results_as_hash = true
-    return db
+def is_barber_exists? db, name
+    db.execute('select * from Barbers where name=?', [name]).length > 0
 end
+
+def seed_db db, barbers
+
+    barbers.each do |barber|
+        if !is_barber_exists? db, barber 
+            db.execute 'insert into Barbers (name) values (?)', [barber]
+        end
+    end
+
+end
+
+def get_db
+    db = SQLite3::Database.new 'barbershop.db'  
+    db.results_as_hash = true
+    return db 
+end
+
+before do
+    db = get_db
+    @barbers = db.execute 'select * from Barbers'
+end 
 
 configure do
     db = get_db
-    db.execute 'CREATE TABLE IF NOT EXISTS  
+    db.execute 'CREATE TABLE IF NOT EXISTS 
         "Users" 
         (
             "Id" INTEGER PRIMARY KEY AUTOINCREMENT, 
-            "username" TEXT, 
+            "username" TEXT,
             "phone" TEXT, 
-            "date_stamp" TEXT, 
+            "datestamp" TEXT, 
             "barber" TEXT, 
             "color" TEXT
         )'
-end 
 
-get '/' do
-       erb "Hello! <a href=\"https://github.com/bootstrap-ruby/sinatra-bootstrap\">Original</a> pattern has been modified for <a href=\"http://rubyschool.us/\">Ruby School !!!</a>"            
+    db.execute 'CREATE TABLE IF NOT EXISTS 
+        "Barbers" 
+        (
+            "Id" INTEGER PRIMARY KEY AUTOINCREMENT, 
+            "name" TEXT,
+        )'
+
+    seed_db db, ['Arnold Springer','Hans-Joachim Stroth','Zeev Nedermann','William La Belle','Alan Chop']
+
 end
 
-get '/about' do       
+get '/' do  
+    erb "Hello! <a href=\"https://github.com/bootstrap-ruby/sinatra-bootstrap\">Original</a> pattern has been modified for Ruby School"
+end
+   
+get '/about' do
+    @error = "something wrong ...!"
     erb :about
 end
 
@@ -35,42 +65,37 @@ get '/visit' do
     erb :visit
 end
 
-get '/contacts' do
-    erb :contacts
-end
-
 post '/visit' do
 
     @username = params[:username]
     @phone = params[:phone]
     @datetime = params[:datetime]
-    @barber = params[:barber]
+    @barber = params[:barber]   
     @color = params[:color]
 
-    # hash for validation
-    hh = {    :username => 'Enter your name',
-              :phone => 'Enter your phone number',
-              :datetime => 'Enter date and time' }
+    hh = {  :username => 'Enter your name',
+            :phone => 'Enter your phone number',
+            :datetime => 'Enter date and time' }
 
-    @error = hh.select {|key,_| params[key] == ''}.values.join(", ")
-
+    @error = hh.select {|key,_| params[key] == ""}.values.join(",")
+    
     if @error != ''
         return erb :visit
     end
 
     db = get_db
     db.execute 'insert into 
-    Users 
-    (
-        username, 
-        phone, 
-        date_stamp, 
-        barber, 
-        #color
-    )
-    values ( ?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color] 
+        Users 
+        (
+            username, 
+            phone, 
+            date_stamp, 
+            barber, 
+            color
+        )
+        values ( ?, ?, ?, ?, ?)', [@username, @phone, @datetime, @barber, @color]
 
-    erb "OK, username is #{@username}, #{@phone}, #{@datetime}, #{@barber}, #{@color}"
+    erb "<2>Thanks, you are registered!</h2>"
 
 end
 
