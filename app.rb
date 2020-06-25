@@ -81,4 +81,3 @@ get '/showusers' do
     
     erb :showusers
 end
-
